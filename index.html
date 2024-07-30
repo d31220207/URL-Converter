@@ -11,12 +11,12 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Exo', sans-serif;
         }
 
         body,
         html {
             height: 100%;
-            font-family: 'Exo', sans-serif;
             background: #4e54c8;
             background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);
             overflow-x: hidden;
@@ -65,7 +65,6 @@
             word-break: break-all;
         }
 
-        /* Menambahkan gaya untuk label hasil */
         #result .result-label {
             font-weight: bold;
             margin-bottom: 5px;
@@ -112,9 +111,7 @@
             justify-content: center;
             gap: 10px;
             max-width: 900px;
-            /* Added to align buttons with the input field */
             margin: 0 auto;
-            /* Center the button container */
         }
 
         button {
@@ -147,27 +144,6 @@
 
         #resetButton:hover {
             background: #b83535;
-        }
-
-        #result {
-            display: none;
-            text-align: left;
-            word-break: break-all;
-        }
-
-        #result.success {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-
-        #result a {
-            color: #4a90e2;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        #result a:hover {
-            text-decoration: underline;
         }
 
         @keyframes fadeIn {
@@ -315,7 +291,6 @@
             }
         }
 
-        /* Updated styles for the side panel toggle button */
         .side-panel-toggle {
             position: fixed;
             top: 20px;
@@ -382,7 +357,6 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: none;
-            /* Explicitly remove any shadow */
         }
 
         .redirect-button:hover,
@@ -390,7 +364,6 @@
             background: linear-gradient(to left, #8f94fb, #4e54c8);
             color: white;
             box-shadow: none;
-            /* Ensure no shadow on hover/focus */
         }
 
         .footer {
