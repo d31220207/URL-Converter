@@ -52,6 +52,7 @@ html_template = '''
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=PT+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
         * {
             margin: 0;
@@ -243,6 +244,31 @@ html_template = '''
             color: rgba(255, 255, 255, 0.255);
             font-size: 12px;
         }
+        .copy-icon {
+            cursor: pointer;
+            vertical-align: middle;
+            margin-right: 15px; /* Increased from 5px to 15px */
+            font-size: 26px; /* Increased from 20px to 24px */
+            padding: 5px; /* Added padding around the icon */
+        }
+        
+        #result {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            word-break: break-all;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        #result a {
+            flex-grow: 1;
+            text-decoration: none;
+            color: #4a90e2;
+            padding-left: 10px; /* Added left padding to the URL text */
+        }
     </style>
 </head>
 <body>
@@ -269,13 +295,24 @@ html_template = '''
         </form>
         {% if result %}
         <div id="result">
-            <strong>Reversed URL:</strong> <a href="{{ result }}" target="_blank">{{ result }}</a>
+            <span class="material-symbols-outlined copy-icon" onclick="copyToClipboard()">content_copy</span>
+            <a href="{{ result }}" target="_blank" id="reversed-url">{{ result }}</a>
         </div>
         {% endif %}
     </div>
     <div class="footer">
         Developed by Afkar (2024)
     </div>
+    <script>
+        function copyToClipboard() {
+            var url = document.getElementById('reversed-url').textContent;
+            navigator.clipboard.writeText(url).then(function() {
+                alert('URL copied to clipboard!');
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>
 </body>
 </html>
 '''
