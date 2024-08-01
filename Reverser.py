@@ -381,7 +381,7 @@ html_template = '''
     </div>
     <div class="container">
         <h1>URL Reverser</h1>
-        <div class="subtitle">GitHub Pages, YouTube Handle & Google Drive</div>
+        <div class="subtitle">GitHub Pages, YouTube & Google Drive</div>
         <form method="post">
             <input type="text" name="url" placeholder="Enter URL" required>
             <button type="submit" id="convertButton">Reverse</button>
@@ -414,7 +414,7 @@ html_template = '''
         </details>
     </div>
     <div class="footer">
-        Developed by Afkar (2024)
+        Developed by afkarxyz (2024)
     </div>
     <script>
         function copyToClipboard() {
