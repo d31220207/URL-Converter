@@ -347,7 +347,7 @@ html_template = '''
         }
         .copy-icon {
             cursor: pointer;
-            color: #4a90e2;
+            color: #4c4c4c;
             vertical-align: middle;
             margin-right: 15px;
             font-size: 26px;
@@ -463,7 +463,7 @@ html_template = '''
             }
 
             .container {
-                padding: 20px;
+                padding: 30px 5px;
             }
         }
     </style>
