@@ -20,38 +20,64 @@ def reverse_url(url):
         parts = url.split('/')
         username = parts[2].split('.')[0]
         repo_name = '/'.join(parts[3:])
-        return f"https://github.com/{username}/{repo_name}"
+        return [f"https://github.com/{username}/{repo_name}"]
     
     elif 'drive.google.com' in url or 'drive.usercontent.google.com' in url:
         query_params = parse_qs(parsed_url.query)
         if 'id' in query_params:
             file_id = query_params['id'][0]
-            return f"https://drive.google.com/file/d/{file_id}/view"
+            return [f"https://drive.google.com/file/d/{file_id}/view"]
         elif parsed_url.path.startswith('/file/d/'):
             file_id = parsed_url.path.split('/')[3]
-            return f"https://drive.google.com/file/d/{file_id}/view"
+            return [f"https://drive.google.com/file/d/{file_id}/view"]
     
     elif 'youtube.com' in url or 'youtu.be' in url:
         try:
-            response = requests.get(url)
+            if 'youtu.be' in url:
+                video_id = url.split('/')[-1]
+            elif 'watch' in url:
+                query_params = parse_qs(parsed_url.query)
+                video_id = query_params.get('v', [None])[0]
+            else:
+                # Handle channel URLs
+                response = requests.get(url)
+                response.raise_for_status()
+                soup = BeautifulSoup(response.text, 'html.parser')
+                channel_id = None
+                meta_channel = soup.find('meta', {'itemprop': 'channelId'})
+                if meta_channel:
+                    channel_id = meta_channel['content']
+                if not channel_id:
+                    channel_link = soup.find('link', {'rel': 'canonical', 'href': lambda x: x and '/channel/' in x})
+                    if channel_link:
+                        channel_id = channel_link['href'].split('/channel/')[-1]
+                if not channel_id:
+                    scripts = soup.find_all('script')
+                    for script in scripts:
+                        if script.string and '"channelId":"' in script.string:
+                            channel_id = script.string.split('"channelId":"')[1].split('"')[0]
+                            break
+                return [f"https://www.youtube.com/channel/{channel_id}"] if channel_id else ["Channel ID not found"]
+            
+            if not video_id:
+                return ["Invalid YouTube URL"]
+            
+            api_url = f"https://www.youtube.com/watch?v={video_id}"
+            response = requests.get(api_url)
             response.raise_for_status()
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            # Try to find the channel ID
+            # Find channel ID
             channel_id = None
-            
-            # Method 1: Look for meta tag with channel ID
             meta_channel = soup.find('meta', {'itemprop': 'channelId'})
             if meta_channel:
                 channel_id = meta_channel['content']
             
-            # Method 2: Look for link with channel ID in URL
             if not channel_id:
                 channel_link = soup.find('link', {'rel': 'canonical', 'href': lambda x: x and '/channel/' in x})
                 if channel_link:
                     channel_id = channel_link['href'].split('/channel/')[-1]
             
-            # Method 3: Parse JavaScript for channel ID
             if not channel_id:
                 scripts = soup.find_all('script')
                 for script in scripts:
@@ -59,15 +85,18 @@ def reverse_url(url):
                         channel_id = script.string.split('"channelId":"')[1].split('"')[0]
                         break
             
-            if channel_id:
-                return f"https://www.youtube.com/channel/{channel_id}"
-            else:
-                return "Unable to find YouTube channel ID"
+            channel_url = f"https://www.youtube.com/channel/{channel_id}" if channel_id else "Channel ID not found"
+            
+            # Generate thumbnail URLs
+            maxres_thumbnail = f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg"
+            sd_thumbnail = f"https://i.ytimg.com/vi/{video_id}/sddefault.jpg"
+            
+            return [channel_url, maxres_thumbnail, sd_thumbnail]
         
         except requests.RequestException:
-            return "Error accessing YouTube URL"
+            return ["Error accessing YouTube URL"]
     
-    return "Invalid URL. Please enter a valid GitHub Pages, YouTube & Google Drive URL"
+    return ["Invalid URL. Please enter a valid GitHub Pages, YouTube & Google Drive URL"]
 
 html_template = '''
 <!DOCTYPE html>
@@ -309,6 +338,11 @@ html_template = '''
             font-size: 12px;
         }
 
+        .result-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
         .copy-icon {
             cursor: pointer;
             vertical-align: middle;
@@ -318,7 +352,7 @@ html_template = '''
         }
 
         #result {
-            display: flex;
+            display: wrap;
             align-items: center;
             background: rgba(255, 255, 255, 0.9);
             padding: 15px 20px;
@@ -474,6 +508,7 @@ html_template = '''
             </div>
         </div>
         <div class="container">
+        <div class="container">
             <div class="main-content">
                 <h1>URL Reverser</h1>
                 <div class="subtitle">GitHub Pages, YouTube & Google Drive</div>
@@ -483,8 +518,12 @@ html_template = '''
                 </form>
                 {% if result %}
                 <div id="result">
-                    <span class="material-symbols-outlined copy-icon" onclick="copyToClipboard()">content_copy</span>
-                    <a href="{{ result }}" target="_blank" id="reversed-url">{{ result }}</a>
+                    {% for url in result %}
+                    <div class="result-item">
+                        <span class="material-symbols-outlined copy-icon" onclick="copyToClipboard(this)">content_copy</span>
+                        <a href="{{ url }}" target="_blank">{{ url }}</a>
+                    </div>
+                    {% endfor %}
                 </div>
                 {% endif %}
                 <details class="spoiler">
@@ -495,11 +534,17 @@ html_template = '''
 
                     <hr class="separator">
 
-                    <p><span class="service-name">YouTube</span> ( Handle & Video )</p>
                     <p><span class="input">Input:</span> https://www.youtube.com/@afkarxyz</p>
-                    <p><span class="or">or</span></p>
-                    <p>https://youtu.be/76vbdg9Tq2E</p>
                     <p><span class="result">Result:</span> https://www.youtube.com/channel/UCLPfgkXWjm0qK479Nr1PqBg</p>
+                    <p><span class="or">or</span></p>
+                    <p><span class="input">Input:</span></p>
+                    <p>https://youtu.be/76vbdg9Tq2E</p>
+                    <p>https://www.youtube.com/watch?v=76vbdg9Tq2E</p>
+                    <p><span class="result">Result:</span></p>
+                    <p>https://www.youtube.com/channel/UCLPfgkXWjm0qK479Nr1PqBg</p>
+                    <p>https://i.ytimg.com/vi/76vbdg9Tq2E/maxresdefault.jpg</p>
+                    <p>https://i.ytimg.com/vi/76vbdg9Tq2E/sddefault.jpg</p>
+
 
                     <hr class="separator">
 
@@ -518,8 +563,8 @@ html_template = '''
         </div>
     </div>
     <script>
-        function copyToClipboard() {
-            var url = document.getElementById('reversed-url').textContent;
+        function copyToClipboard(element) {
+            var url = element.nextElementSibling.href;
             navigator.clipboard.writeText(url).then(function () {
                 alert('URL copied to clipboard!');
             }, function (err) {
