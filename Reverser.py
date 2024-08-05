@@ -133,10 +133,11 @@ html_template = '''
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             position: relative;
             overflow-y: auto;
+            padding-top: 50px;
         }
 
         .container {
@@ -144,7 +145,8 @@ html_template = '''
             max-width: 900px;
             text-align: center;
             z-index: 1;
-            padding: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
         }
 
         .main-content {
@@ -345,6 +347,7 @@ html_template = '''
         }
         .copy-icon {
             cursor: pointer;
+            color: #4a90e2;
             vertical-align: middle;
             margin-right: 15px;
             font-size: 26px;
@@ -456,10 +459,11 @@ html_template = '''
 
             .page-wrapper {
                 justify-content: flex-start;
+                padding-top: 20px;
             }
 
             .container {
-                padding-top: 40px;
+                padding: 20px;
             }
         }
     </style>
@@ -508,7 +512,6 @@ html_template = '''
             </div>
         </div>
         <div class="container">
-        <div class="container">
             <div class="main-content">
                 <h1>URL Reverser</h1>
                 <div class="subtitle">GitHub Pages, YouTube & Google Drive</div>
@@ -528,33 +531,34 @@ html_template = '''
                 {% endif %}
                 <details class="spoiler">
                     <summary>Example</summary>
-                    <p class="service-name">GitHub Pages</p>
-                    <p><span class="input">Input:</span> https://gchq.github.io/CyberChef</p>
-                    <p><span class="result">Result:</span> https://github.com/gchq/CyberChef</p>
+                    <div class="example-content">
+                        <p class="service-name">GitHub Pages</p>
+                        <p><span class="input">Input:</span> https://gchq.github.io/CyberChef</p>
+                        <p><span class="result">Result:</span> https://github.com/gchq/CyberChef</p>
 
-                    <hr class="separator">
+                        <hr class="separator">
 
-                    <p><span class="input">Input:</span> https://www.youtube.com/@afkarxyz</p>
-                    <p><span class="result">Result:</span> https://www.youtube.com/channel/UCLPfgkXWjm0qK479Nr1PqBg</p>
-                    <p><span class="or">or</span></p>
-                    <p><span class="input">Input:</span></p>
-                    <p>https://youtu.be/76vbdg9Tq2E</p>
-                    <p>https://www.youtube.com/watch?v=76vbdg9Tq2E</p>
-                    <p><span class="result">Result:</span></p>
-                    <p>https://www.youtube.com/channel/UCLPfgkXWjm0qK479Nr1PqBg</p>
-                    <p>https://i.ytimg.com/vi/76vbdg9Tq2E/maxresdefault.jpg</p>
-                    <p>https://i.ytimg.com/vi/76vbdg9Tq2E/sddefault.jpg</p>
+                        <p><span class="input">Input:</span> https://www.youtube.com/@afkarxyz</p>
+                        <p><span class="result">Result:</span> https://www.youtube.com/channel/UCLPfgkXWjm0qK479Nr1PqBg</p>
+                        <p><span class="or">or</span></p>
+                        <p><span class="input">Input:</span></p>
+                        <p>https://youtu.be/76vbdg9Tq2E</p>
+                        <p>https://www.youtube.com/watch?v=76vbdg9Tq2E</p>
+                        <p><span class="result">Result:</span></p>
+                        <p>https://www.youtube.com/channel/UCLPfgkXWjm0qK479Nr1PqBg</p>
+                        <p>https://i.ytimg.com/vi/76vbdg9Tq2E/maxresdefault.jpg</p>
+                        <p>https://i.ytimg.com/vi/76vbdg9Tq2E/sddefault.jpg</p>
 
+                        <hr class="separator">
 
-                    <hr class="separator">
-
-                    <p class="service-name">Google Drive</p>
-                    <p><span class="input">Input:</span>
-                        https://drive.usercontent.google.com/download?id=0B1MVW1mFO2zmZHVRWEQ3Rkc3SVE&export=download&authuser=0
-                    </p>
-                    <p><span class="result">Result:</span>
-                        https://drive.google.com/file/d/0B1MVW1mFO2zmZHVRWEQ3Rkc3SVE/view
-                    </p>
+                        <p class="service-name">Google Drive</p>
+                        <p><span class="input">Input:</span>
+                            https://drive.usercontent.google.com/download?id=0B1MVW1mFO2zmZHVRWEQ3Rkc3SVE&export=download&authuser=0
+                        </p>
+                        <p><span class="result">Result:</span>
+                            https://drive.google.com/file/d/0B1MVW1mFO2zmZHVRWEQ3Rkc3SVE/view
+                        </p>
+                    </div>
                 </details>
             </div>
             <div class="footer">
